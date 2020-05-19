@@ -2,7 +2,6 @@ package main
 
 import (
 	"apicore"
-	"context"
 	"encoding/json"
 	"errors"
 )
@@ -20,10 +19,9 @@ func (r *Response) Decode() []byte {
 	return by
 }
 
-func DanmuRep(ctx context.Context, data DanmuData) context.Context {
-	var resp = &Response{
+func DanmuRep(data DanmuData) apicore.Response {
+	return &Response{
 		Code: 0,
 		Data: data,
 	}
-	return context.WithValue(ctx, "SYS_RESPONSE", resp)
 }

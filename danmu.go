@@ -1,7 +1,5 @@
 package main
 
-import "time"
-
 type DanmuType uint8
 
 const (
@@ -12,20 +10,20 @@ const (
 type Danmu []interface{}
 
 // TODO:处理时间
-func (d Danmu) ShowTime() time.Time {
-	return time.Now()
+func (d Danmu) ShowTime() float64 {
+	return d[0].(float64)
 }
 func (d Danmu) Type() DanmuType {
-	return NORMAL
+	return d[1].(DanmuType)
 }
-func (d Danmu) SendTime() time.Time {
-	return time.Now()
+func (d Danmu) ID() string {
+	return d[3].(string)
 }
-func (d Danmu) Color() string {
-	return d[4].(string)
+func (d Danmu) Color() int {
+	return d[2].(int)
 }
 func (d Danmu) Content() string {
-	return d[5].(string)
+	return d[4].(string)
 }
 
 type DanmuData []Danmu

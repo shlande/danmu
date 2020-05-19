@@ -2,35 +2,35 @@ package main
 
 import (
 	"apicore"
-	"context"
 	"errors"
-	"net/http"
 )
 
 func init() {
-	apicore.AddHandler("/danmu/", func() apicore.Handler {
-		return &DanmuHandler{}
+	apicore.AddHandler(apicore.NewMatcher("/danmu/v3/", "GET"), func() apicore.Handler {
+		return &GetDanmuHandler{}
 	})
 }
 
-type DanmuHandler struct {
-	VideoID int `json:"video_id"`
-	MaxNum  int `json:"max_num"`
+type GetDanmuHandler struct {
+	VideoID int `json:"id"`
+	MaxNum  int `json:"max"`
 }
 
-func (d *DanmuHandler) Handle(ctx context.Context, request *http.Request) context.Context {
-	return d.mock(ctx)
+func (d *GetDanmuHandler) Handle(ctx apicore.Conn) {
+	manuData := DanmuStore.Get(d.VideoID)
+	ctx.SetRsp(DanmuRep(manuData))
+	return
 }
 
-func (d *DanmuHandler) IsValid() error {
+func (d *GetDanmuHandler) IsValid() error {
 	if d.VideoID == 0 {
 		return errors.New("无效视频id")
 	}
 	return nil
 }
 
-func (d *DanmuHandler) mock(ctx context.Context) context.Context {
+func (d *GetDanmuHandler) mock(ctx apicore.Conn) {
 	var dm = append(make([]interface{}, 0, 5), 61.781, 0, 16777215, "be7658b2", "测试弹幕")
 	var DanmuData = DanmuData([]Danmu{dm})
-	return DanmuRep(ctx, DanmuData)
+	ctx.SetRsp(DanmuRep(DanmuData))
 }
